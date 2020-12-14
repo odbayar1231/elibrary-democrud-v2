@@ -14,6 +14,7 @@ public class Book {
     private Integer bookId;
     @NotBlank(message = " *Book Title is required")
     private String isbn;
+    @NotBlank(message = "* ISBN is required")
     private String title;
     private Double overdueFee;
     private String publisher;
