@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -48,6 +45,34 @@ public class BookController {
         book = bookService.saveBook(book);
         return "redirect:/elibrary/book/list";
     }
+
+    @GetMapping(value = {"/elibrary/book/edit/{bookId}", "/book/edit/{bookId}"})
+    public String editBook(@PathVariable Integer bookId, Model model) {
+        Book book = bookService.getBookById(bookId);
+        if(book != null){
+            model.addAttribute("book", book);
+            return "book/edit";
+        }
+        return "book/list";
+    }
+
+    @PostMapping(value = {"/elibrary/book/edit", "/book/edit"})
+    public String updateBook(@Valid @ModelAttribute("book") Book book,
+                             BindingResult bindingResult, Model model){
+        if(bindingResult.hasErrors()){
+            model.addAttribute("errors", bindingResult.getAllErrors());
+            return "book/edit";
+        }
+        book = bookService.saveBook(book);
+        return "redirect:/elibrary/book/list";
+    }
+
+    @GetMapping(value = {"/elibrary/book/delete/{bookId}","/book/delete/{bookId}"})
+    public String deleteBook(@PathVariable Integer bookId, Model model) {
+        bookService.deleteBookById(bookId);
+        return "redirect:/elibrary/book/list";
+    }
+
 
     @GetMapping(value = {"/elibrary/book/search", "/book/search"})
     public ModelAndView searchBooks(@RequestParam String searchString) {
